@@ -34,11 +34,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/quil_test/core.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="521">
+            <state relative-caret-position="585">
               <caret line="171" column="90" selection-start-line="171" selection-start-column="90" selection-end-line="171" selection-end-column="90" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
             </state>
           </provider>
         </entry>
@@ -50,6 +59,9 @@
       <find>renderer</find>
       <find>input-player</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -382,6 +394,7 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <autoscrollFromSource ProjectPane="true" />
@@ -426,7 +439,7 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
-  <component name="ReplState" timestamp="1547825147680">{:repl-history {:ide [], :local [{:command &quot;(entities)&quot;, :offset 10, :ns &quot;quil-test.core&quot;} {:command &quot;(renderer (:entities create-level))&quot;, :offset 35, :ns &quot;quil-test.core&quot;} {:command &quot;((:entities create-level))&quot;, :offset 26, :ns &quot;quil-test.core&quot;} {:command &quot;(create-level)&quot;, :offset 14, :ns &quot;quil-test.core&quot;} {:command &quot;(:entities create-level)&quot;, :offset 24, :ns &quot;quil-test.core&quot;} {:command &quot;(:entities (create-level))&quot;, :offset 26, :ns &quot;quil-test.core&quot;} {:command &quot;(:renderer (first (:entities (create-level))))&quot;, :offset 46, :ns &quot;quil-test.core&quot;} {:command &quot;(:components (first (:entities (create-level))))&quot;, :offset 48, :ns &quot;quil-test.core&quot;} {:command &quot;(:renderer (:components (first (:entities (create-level)))))&quot;, :offset 60, :ns &quot;quil-test.core&quot;} {:command &quot;(-&gt; (first (:entities (create-level))) :components :renderer)&quot;, :offset 61, :ns &quot;quil-test.core&quot;} {:command &quot;(force (input [\&quot;a\&quot; \&quot;b\&quot; \&quot;c\&quot;] 1 1))&quot;, :offset 33, :ns &quot;quil-test.core&quot;} {:command &quot;(input [\&quot;a\&quot; \&quot;b\&quot; \&quot;c\&quot;] 1 1)&quot;, :offset 25, :ns &quot;quil-test.core&quot;} {:command &quot;(class (input [\&quot;a\&quot; \&quot;b\&quot; \&quot;c\&quot;] 1 1))&quot;, :offset 33, :ns &quot;quil-test.core&quot;} {:command &quot;(input-player {:position {:v1 {:x 0 :y 0} \n                          :v2 {:x 0 :y 0}\n                          :v3 {:x 0 :y 0}}})&quot;, :offset 129, :ns &quot;quil-test.core&quot;} {:command &quot;(input-player {:position {:v1 {:x 0 :y 0} \n                          :v2 {:x 0 :y 0}\n                          :v3 {:x 0 :y 0}}} 1 1)&quot;, :offset 133, :ns &quot;quil-test.core&quot;} {:command &quot;(or true false)&quot;, :offset 15, :ns &quot;user&quot;} {:command &quot;(aabs-overlapping? {:min-aab {:x 0 :y 0}\n                    :max-aab {:x 0 :y 0}}\n                   {:min-aab {:x 0 :y 0}\n                    :max-aab {:x 0 :y 0}})&quot;, :offset 166, :ns &quot;quil-test.core&quot;} {:command &quot;(aabs-overlapping? {:min-aab {:x 0 :y 0}\n                    :max-aab {:x 0 :y 0}}\n                   {:min-aab {:x 10 :y 10}\n                    :max-aab {:x 10 :y 10}})&quot;, :offset 170, :ns &quot;quil-test.core&quot;} {:command &quot;(aabs-overlapping? {:min-aab {:x 0 :y 1}\n                    :max-aab {:x 0 :y 1}}\n                   {:min-aab {:x 10 :y 10}\n                    :max-aab {:x 10 :y 10}})&quot;, :offset 170, :ns &quot;quil-test.core&quot;}], :remote []}}</component>
+  <component name="ReplState" timestamp="1547825410185">{:repl-history {:ide [], :local [{:command &quot;(entities)&quot;, :offset 10, :ns &quot;quil-test.core&quot;} {:command &quot;(renderer (:entities create-level))&quot;, :offset 35, :ns &quot;quil-test.core&quot;} {:command &quot;((:entities create-level))&quot;, :offset 26, :ns &quot;quil-test.core&quot;} {:command &quot;(create-level)&quot;, :offset 14, :ns &quot;quil-test.core&quot;} {:command &quot;(:entities create-level)&quot;, :offset 24, :ns &quot;quil-test.core&quot;} {:command &quot;(:entities (create-level))&quot;, :offset 26, :ns &quot;quil-test.core&quot;} {:command &quot;(:renderer (first (:entities (create-level))))&quot;, :offset 46, :ns &quot;quil-test.core&quot;} {:command &quot;(:components (first (:entities (create-level))))&quot;, :offset 48, :ns &quot;quil-test.core&quot;} {:command &quot;(:renderer (:components (first (:entities (create-level)))))&quot;, :offset 60, :ns &quot;quil-test.core&quot;} {:command &quot;(-&gt; (first (:entities (create-level))) :components :renderer)&quot;, :offset 61, :ns &quot;quil-test.core&quot;} {:command &quot;(force (input [\&quot;a\&quot; \&quot;b\&quot; \&quot;c\&quot;] 1 1))&quot;, :offset 33, :ns &quot;quil-test.core&quot;} {:command &quot;(input [\&quot;a\&quot; \&quot;b\&quot; \&quot;c\&quot;] 1 1)&quot;, :offset 25, :ns &quot;quil-test.core&quot;} {:command &quot;(class (input [\&quot;a\&quot; \&quot;b\&quot; \&quot;c\&quot;] 1 1))&quot;, :offset 33, :ns &quot;quil-test.core&quot;} {:command &quot;(input-player {:position {:v1 {:x 0 :y 0} \n                          :v2 {:x 0 :y 0}\n                          :v3 {:x 0 :y 0}}})&quot;, :offset 129, :ns &quot;quil-test.core&quot;} {:command &quot;(input-player {:position {:v1 {:x 0 :y 0} \n                          :v2 {:x 0 :y 0}\n                          :v3 {:x 0 :y 0}}} 1 1)&quot;, :offset 133, :ns &quot;quil-test.core&quot;} {:command &quot;(or true false)&quot;, :offset 15, :ns &quot;user&quot;} {:command &quot;(aabs-overlapping? {:min-aab {:x 0 :y 0}\n                    :max-aab {:x 0 :y 0}}\n                   {:min-aab {:x 0 :y 0}\n                    :max-aab {:x 0 :y 0}})&quot;, :offset 166, :ns &quot;quil-test.core&quot;} {:command &quot;(aabs-overlapping? {:min-aab {:x 0 :y 0}\n                    :max-aab {:x 0 :y 0}}\n                   {:min-aab {:x 10 :y 10}\n                    :max-aab {:x 10 :y 10}})&quot;, :offset 170, :ns &quot;quil-test.core&quot;} {:command &quot;(aabs-overlapping? {:min-aab {:x 0 :y 1}\n                    :max-aab {:x 0 :y 1}}\n                   {:min-aab {:x 10 :y 10}\n                    :max-aab {:x 10 :y 10}})&quot;, :offset 170, :ns &quot;quil-test.core&quot;}], :remote []}}</component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -527,18 +540,17 @@
       <workItem from="1547724600382" duration="13138000" />
       <workItem from="1547744565688" duration="40000" />
       <workItem from="1547744948620" duration="7930000" />
-      <workItem from="1547809470354" duration="7174000" />
+      <workItem from="1547809470354" duration="7387000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58360000" />
+    <option name="totallyTimeSpent" value="58573000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="960" y="23" width="960" height="1057" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.33115467" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.33115467" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -558,7 +570,7 @@
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Statistic" order="11" />
       <window_info anchor="bottom" id="Database Changes" order="12" />
-      <window_info anchor="bottom" id="Version Control" order="13" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="13" />
       <window_info anchor="bottom" id="Flutter Performance" order="14" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="15" show_stripe_button="false" />
       <window_info anchor="bottom" id="Messages" order="16" />
@@ -655,8 +667,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/quil_test/core.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
+        <state relative-caret-position="585">
           <caret line="171" column="90" selection-start-line="171" selection-start-column="90" selection-end-line="171" selection-end-column="90" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
         </state>
       </provider>
     </entry>
