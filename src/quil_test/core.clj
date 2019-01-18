@@ -11,15 +11,12 @@
 
 (defn create-world
   []
-  (let [state {:systems  {:graphics graphics
-                          :movement movement
-                          :physics  physics}
-               :entities []}
+  (let [state {:entities []}
         player (-> (entity/create-entity)
                    (entity/attach-component-on-entity {:type      :transform
                                                        :component {:x 100 :y 100}})
                    (entity/attach-component-on-entity {:type      :input
-                                                       :component {:input-handler-fn handle-movement-wasd}})
+                                                       :component {:input-handler-fn input/handle-movement-wasd}})
                    (entity/attach-component-on-entity {:type      :motion
                                                        :component {:velocity 2
                                                                    :dx       0
