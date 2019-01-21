@@ -62,7 +62,6 @@
 
 (defn update-entity-on-collision-enter
   [entity]
-  ;(println (get-in entity [:components :collider :is-colliding?]))
   (if-not (get-in entity [:components :collider :is-colliding?])
     (if-let [on-collision-enter-fn (get-in entity [:components :collider :on-collision-enter])]
       (on-collision-enter-fn entity)
@@ -71,7 +70,6 @@
 
 (defn update-entity-on-collision-exit
   [entity]
-  ;(println (get-in entity [:components :collider :is-colliding?]))
   (if (get-in entity [:components :collider :is-colliding?])
     (if-let [on-collision-exit-fn (get-in entity [:components :collider :on-collision-exit])]
       (on-collision-exit-fn entity)
