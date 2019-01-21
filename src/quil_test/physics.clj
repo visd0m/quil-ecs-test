@@ -38,14 +38,41 @@
   [e1 e2]
   (aabs-overlapping? (get-aab e1) (get-aab e2)))
 
+(defn get-colliding-entities
+  [entity all-entities]
+  (->> all-entities
+       (filter #(not (= (:id %) (:id entity))))
+       (filter is-physics-eligible?)
+       (filter (fn [e2] (is-colliding? entity e2)))))
+
+(defn stop-motion-on-entity
+  [entity]
+  (if (get-in entity [:components :motion])
+    (-> entity
+        (assoc-in [:components :motion :dx] 0)
+        (assoc-in [:components :motion :dy] 0))
+    entity))
+
+(defn update-entity-motion
+  [entity colliding-entities]
+  (if (and (not-empty (filter #(get-in % [:components :collider :rigid-body]) colliding-entities))
+           (get-in entity [:components :collider :rigid-body]))
+    (stop-motion-on-entity entity)
+    entity))
+
+(defn handle-physics
+  [entity entities]
+  (let [colliding-entities (get-colliding-entities entity entities)
+        updated-entity (update-entity-motion entity colliding-entities)]
+    (if (not-empty colliding-entities)
+      (if-let [on-collision-fn (get-in updated-entity [:components :collider :on-collision])]
+        (on-collision-fn updated-entity)
+        updated-entity)
+      updated-entity)))
+
 (defn physics
   [entities]
   (for [entity entities]
-    (if (and (is-physics-eligible? entity) (not (empty? (->> entities
-                                                             (filter #(not (= (:id %) (:id entity))))
-                                                             (filter is-physics-eligible?)
-                                                             (filter (fn [e2] (is-colliding? entity e2)))))))
-      (-> entity
-          (assoc-in [:components :motion :dx] 0)
-          (assoc-in [:components :motion :dy] 0))
+    (if (is-physics-eligible? entity)
+      (handle-physics entity entities)
       entity)))
