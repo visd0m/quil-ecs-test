@@ -5,7 +5,6 @@
   {:id  (java.util.UUID/randomUUID)
    :tag tag})
 
-
 (defn register-entity
   [state entity]
   (assoc state :entities (conj (:entities state) entity)))
