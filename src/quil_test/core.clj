@@ -12,7 +12,7 @@
 (defn create-world
   []
   (let [state {:entities []}
-        player (-> (entity/create-entity)
+        player (-> (entity/create-entity "player")
                    (entity/attach-component-on-entity {:type      :transform
                                                        :component {:x 100 :y 100}})
                    (entity/attach-component-on-entity {:type      :input
@@ -26,10 +26,10 @@
                                                                               (q/fill 0 0 0)
                                                                               (q/rect (:x transform) (:y transform) 30 30))}})
                    (entity/attach-component-on-entity {:type      :collider
-                                                       :component {:width      30
-                                                                   :height     30
-                                                                   :rigid-body true}}))
-        wall1 (-> (entity/create-entity)
+                                                       :component {:width          30
+                                                                   :height         30
+                                                                   :is-rigid-body? true}}))
+        wall1 (-> (entity/create-entity "wall1")
                   (entity/attach-component-on-entity {:type      :transform
                                                       :component {:x 0 :y 0}})
                   (entity/attach-component-on-entity {:type      :drawable
@@ -37,10 +37,10 @@
                                                                              (q/fill 100 100 100)
                                                                              (q/rect (:x transform) (:y transform) 20 500))}})
                   (entity/attach-component-on-entity {:type      :collider
-                                                      :component {:width      20
-                                                                  :height     500
-                                                                  :rigid-body true}}))
-        wall2 (-> (entity/create-entity)
+                                                      :component {:width          20
+                                                                  :height         500
+                                                                  :is-rigid-body? true}}))
+        wall2 (-> (entity/create-entity "wall2")
                   (entity/attach-component-on-entity {:type      :transform
                                                       :component {:x 480 :y 0}})
                   (entity/attach-component-on-entity {:type      :drawable
@@ -48,10 +48,10 @@
                                                                              (q/fill 100 100 100)
                                                                              (q/rect (:x transform) (:y transform) 20 450))}})
                   (entity/attach-component-on-entity {:type      :collider
-                                                      :component {:width      20
-                                                                  :height     450
-                                                                  :rigid-body true}}))
-        wall3 (-> (entity/create-entity)
+                                                      :component {:width          20
+                                                                  :height         450
+                                                                  :is-rigid-body? true}}))
+        wall3 (-> (entity/create-entity "wall3")
                   (entity/attach-component-on-entity {:type      :transform
                                                       :component {:x 300 :y 300}})
                   (entity/attach-component-on-entity {:type      :drawable
@@ -59,12 +59,16 @@
                                                                              (q/fill 100 100 100)
                                                                              (q/rect (:x transform) (:y transform) 20 20))}})
                   (entity/attach-component-on-entity {:type      :collider
-                                                      :component {:width        20
-                                                                  :height       20
-                                                                  :rigid-body   false
-                                                                  :on-collision (fn [this-entity]
-                                                                                  (println "collision enter of=" this-entity)
-                                                                                  this-entity)}}))]
+                                                      :component {:width              20
+                                                                  :height             20
+                                                                  :is-rigid-body?     false
+                                                                  :is-colliding?      false
+                                                                  :on-collision-enter (fn [this-entity]
+                                                                                        (println "[on collision ENTER] entity=" (:tag this-entity))
+                                                                                        this-entity)
+                                                                  :on-collision-exit  (fn [this-entity]
+                                                                                        (println "[on collision EXIT] entity=" (:tag this-entity))
+                                                                                        this-entity)}}))]
 
     (-> state
         (entity/register-entity player)

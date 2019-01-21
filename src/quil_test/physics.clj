@@ -55,9 +55,27 @@
 
 (defn update-entity-motion
   [entity colliding-entities]
-  (if (and (not-empty (filter #(get-in % [:components :collider :rigid-body]) colliding-entities))
-           (get-in entity [:components :collider :rigid-body]))
+  (if (and (not-empty (filter #(get-in % [:components :collider :is-rigid-body?]) colliding-entities))
+           (get-in entity [:components :collider :is-rigid-body?]))
     (stop-motion-on-entity entity)
+    entity))
+
+(defn update-entity-on-collision-enter
+  [entity]
+  ;(println (get-in entity [:components :collider :is-colliding?]))
+  (if-not (get-in entity [:components :collider :is-colliding?])
+    (if-let [on-collision-enter-fn (get-in entity [:components :collider :on-collision-enter])]
+      (on-collision-enter-fn entity)
+      entity)
+    entity))
+
+(defn update-entity-on-collision-exit
+  [entity]
+  ;(println (get-in entity [:components :collider :is-colliding?]))
+  (if (get-in entity [:components :collider :is-colliding?])
+    (if-let [on-collision-exit-fn (get-in entity [:components :collider :on-collision-exit])]
+      (on-collision-exit-fn entity)
+      entity)
     entity))
 
 (defn handle-physics
@@ -65,10 +83,12 @@
   (let [colliding-entities (get-colliding-entities entity entities)
         updated-entity (update-entity-motion entity colliding-entities)]
     (if (not-empty colliding-entities)
-      (if-let [on-collision-fn (get-in updated-entity [:components :collider :on-collision])]
-        (on-collision-fn updated-entity)
-        updated-entity)
-      updated-entity)))
+      (-> updated-entity
+          (update-entity-on-collision-enter)
+          (assoc-in [:components :collider :is-colliding?] true))
+      (-> updated-entity
+          (update-entity-on-collision-exit)
+          (assoc-in [:components :collider :is-colliding?] false)))))
 
 (defn physics
   [entities]
