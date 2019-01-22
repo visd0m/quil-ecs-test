@@ -1,6 +1,7 @@
 (ns quil-test.input)
 
-(defn input
+(defn
+  input
   [entities key-event]
   (for [entity entities]
     (let [input (get-in entity [:components :input])

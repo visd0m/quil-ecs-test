@@ -1,6 +1,7 @@
 (ns quil-test.movement)
 
 (defn movement
+
   [entities]
   (for [entity entities]
     (let [transform (get-in entity [:components :transform])
