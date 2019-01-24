@@ -19,19 +19,20 @@
                                                        :component {:x 0
                                                                    :y 0}})
                    (entity/attach-component-on-entity {:type      :input
-                                                       :component {:input-handler-fn input/handle-movement-wasd}})
+                                                       :component {:input-handler-fn input/handle-movement-wasd-jump}})
                    (entity/attach-component-on-entity {:type      :motion
-                                                       :component {:velocity 5
+                                                       :component {:velocity 2
                                                                    :dx       0
                                                                    :dy       0}})
                    (entity/attach-component-on-entity {:type      :drawable
                                                        :component {:draw-fn (fn []
-                                                                              (q/fill 0 0 0)
+                                                                              (q/fill 255 0 255)
                                                                               (q/rect 0 0 30 30))}})
                    (entity/attach-component-on-entity {:type      :collider
                                                        :component {:width          30
                                                                    :height         30
-                                                                   :is-rigid-body? true}}))
+                                                                   :is-rigid-body? true
+                                                                   :is-kinematic?  false}}))
 
         camera (-> (entity/create-entity "camera")
                    (entity/attach-component-on-entity {:type      :transform
@@ -50,11 +51,25 @@
                   (entity/attach-component-on-entity {:type      :collider
                                                       :component {:width          20
                                                                   :height         500
-                                                                  :is-rigid-body? true}}))
+                                                                  :is-rigid-body? true
+                                                                  :is-kinematic?  true}}))
+
+        ground (-> (entity/create-entity "ground")
+                   (entity/attach-component-on-entity {:type      :transform
+                                                       :component {:x -10 :y 100}})
+                   (entity/attach-component-on-entity {:type      :drawable
+                                                       :component {:draw-fn (fn []
+                                                                              (q/fill 100 100 100)
+                                                                              (q/rect 0 0 500 20))}})
+                   (entity/attach-component-on-entity {:type      :collider
+                                                       :component {:width          500
+                                                                   :height         20
+                                                                   :is-rigid-body? true
+                                                                   :is-kinematic?  true}}))
 
         wall2 (-> (entity/create-entity "wall2")
                   (entity/attach-component-on-entity {:type      :transform
-                                                      :component {:x -100 :y -100}})
+                                                      :component {:x -110 :y -100}})
                   (entity/attach-component-on-entity {:type      :drawable
                                                       :component {:draw-fn (fn []
                                                                              (q/fill 100 100 100)
@@ -62,8 +77,8 @@
                   (entity/attach-component-on-entity {:type      :collider
                                                       :component {:width          20
                                                                   :height         450
-                                                                  :is-rigid-body? true}}))
-
+                                                                  :is-rigid-body? true
+                                                                  :is-kinematic?  true}}))
         wall3 (-> (entity/create-entity "wall3")
                   (entity/attach-component-on-entity {:type      :transform
                                                       :component {:x 20 :y 20}})
@@ -75,7 +90,7 @@
                                                       :component {:width              20
                                                                   :height             20
                                                                   :is-rigid-body?     false
-                                                                  :is-colliding?      false
+                                                                  :is-kinematic?      true
                                                                   :on-collision-enter (fn [this-entity]
                                                                                         (println "[on collision ENTER] entity=" (:tag this-entity))
                                                                                         this-entity)
@@ -87,6 +102,7 @@
         (entity/register-entity camera)
         (entity/register-entity wall1)
         (entity/register-entity wall2)
+        (entity/register-entity ground)
         (entity/register-entity wall3))))
 
 (defn setup []

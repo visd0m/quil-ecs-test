@@ -12,6 +12,7 @@
 
 (defn graphics
   [entities]
+  (q/background 0 200 0)
   (if-let [camera (first (filter #(get-in % [:components :camera]) entities))]
     (doseq [entity entities]
       (let [entity-drawable (get-in entity [:components :drawable])

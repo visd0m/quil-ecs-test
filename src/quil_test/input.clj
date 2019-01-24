@@ -10,7 +10,7 @@
         (assoc-in entity [:components :motion] ((:input-handler-fn input) motion key-event))
         entity))))
 
-(defn handle-movement-wasd
+(defn handle-movement-wasd-jump
   [motion key-event]
   (case (:type key-event)
     :down (case (:key key-event)

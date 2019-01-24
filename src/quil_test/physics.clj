@@ -6,24 +6,19 @@
        (get-in entity [:components :transform])))
 
 (defn get-min-aab
-  [entity]
-  (let [transform (get-in entity [:components :transform])
-        motion (get-in entity [:components :motion] {:dx 0 :dy 0})]
-    {:x (+ (:x transform) (:dx motion))
-     :y (+ (:y transform) (:dy motion))}))
+  [x y]
+  {:x x
+   :y y})
 
 (defn get-max-aab
-  [entity]
-  (let [transform (get-in entity [:components :transform])
-        collider (get-in entity [:components :collider])
-        motion (get-in entity [:components :motion] {:dx 0 :dy 0})]
-    {:x (+ (+ (:x transform) (:dx motion)) (:width collider))
-     :y (+ (+ (:y transform) (:dy motion) (:height collider)))}))
+  [x y width height]
+  {:x (+ x width)
+   :y (+ y height)})
 
 (defn get-aab
-  [entity]
-  {:min-aab (get-min-aab entity)
-   :max-aab (get-max-aab entity)})
+  [x y width height]
+  {:min-aab (get-min-aab x y)
+   :max-aab (get-max-aab x y width height)})
 
 (defn aabs-overlapping?
   [{min-aab1 :min-aab max-aab1 :max-aab}
@@ -34,30 +29,109 @@
       false
       true)))
 
-(defn is-colliding?
-  [e1 e2]
-  (aabs-overlapping? (get-aab e1) (get-aab e2)))
+(defn get-collision-with-motion
+  [e1-transform e1-collider e1-motion
+   e2-transform e2-collider]
+  (let [dx (* (:dx e1-motion) (:velocity e1-motion))
+        dy (* (:dy e1-motion) (:velocity e1-motion))]
+    (if (and (not= dx 0) (not= dy 0))
+      (let [x-collision? (aabs-overlapping? (get-aab (+ (:x e1-transform) dx)
+                                                     (:y e1-transform)
+                                                     (:width e1-collider)
+                                                     (:height e1-collider))
+                                            (get-aab (:x e2-transform)
+                                                     (:y e2-transform)
+                                                     (:width e2-collider)
+                                                     (:height e2-collider)))
+            y-collision? (aabs-overlapping? (get-aab (:x e1-transform)
+                                                     (+ (:y e1-transform) dy)
+                                                     (:width e1-collider)
+                                                     (:height e1-collider))
+                                            (get-aab (:x e2-transform)
+                                                     (:y e2-transform)
+                                                     (:width e2-collider)
+                                                     (:height e2-collider)))]
+        {:collision? (or x-collision? y-collision?) :x-collision? x-collision? :y-collision? y-collision?})
+      (if (not= dx 0)
+        (if (aabs-overlapping? (get-aab (+ (:x e1-transform) dx)
+                                        (:y e1-transform)
+                                        (:width e1-collider)
+                                        (:height e1-collider))
+                               (get-aab (:x e2-transform)
+                                        (:y e2-transform)
+                                        (:width e2-collider)
+                                        (:height e2-collider)))
+          {:collision? true :x-collision? true :y-collision? false}
+          {:collision? false :x-collision? false :y-collision? false})
+        (if (not= dy 0)
+          (if (aabs-overlapping? (get-aab (:x e1-transform)
+                                          (+ (:y e1-transform) dy)
+                                          (:width e1-collider)
+                                          (:height e1-collider))
+                                 (get-aab (:x e2-transform)
+                                          (:y e2-transform)
+                                          (:width e2-collider)
+                                          (:height e2-collider)))
+            {:collision? true :x-collision? false :y-collision? true}
+            {:collision? false :x-collision? false :y-collision? false})
+          {:collision? false :x-collision? false :y-collision? false})))))
 
-(defn get-colliding-entities
+(defn get-collision
+  [e1 e2]
+  (let [e1-transform (get-in e1 [:components :transform])
+        e1-collider (get-in e1 [:components :collider])
+        e2-transform (get-in e2 [:components :transform])
+        e2-collider (get-in e2 [:components :collider])]
+    (merge {:entity e2} (if (aabs-overlapping? (get-aab (:x e1-transform)
+                                                        (:y e1-transform)
+                                                        (:width e1-collider)
+                                                        (:height e1-collider))
+                                               (get-aab (:x e2-transform)
+                                                        (:y e2-transform)
+                                                        (:width e2-collider)
+                                                        (:height e2-collider)))
+                          {:collision? true :x-collision? true :y-collision? true}
+                          (if-let [e1-motion (get-in e1 [:components :motion])]
+                            (get-collision-with-motion e1-transform e1-collider e1-motion
+                                                       e2-transform e2-collider)
+                            {:collision? false :x-collision? false :y-collision? false})))))
+
+(defn get-collisions
   [entity all-entities]
   (->> all-entities
        (filter #(not (= (:id %) (:id entity))))
        (filter is-physics-eligible?)
-       (filter (fn [e2] (is-colliding? entity e2)))))
+       (map (fn [e2] (get-collision entity e2)))
+       (filter :collision?)))
 
-(defn stop-motion-on-entity
-  [entity]
+(defn update-x
+  [entity collisions]
+  (let [x-collision? (not-empty (filter :x-collision? collisions))]
+    (if x-collision?
+      (assoc-in entity [:components :motion :dx] 0)
+      entity)))
+
+(defn update-y
+  [entity collisions]
+  (let [y-collision? (not-empty (filter :y-collision? collisions))]
+    (if y-collision?
+      (assoc-in entity [:components :motion :dy] 0)
+      entity)))
+
+(defn update-motion
+  [entity collisions]
   (if (get-in entity [:components :motion])
     (-> entity
-        (assoc-in [:components :motion :dx] 0)
-        (assoc-in [:components :motion :dy] 0))
+        (update-x collisions)
+        (update-y collisions))
     entity))
 
 (defn update-entity-motion
-  [entity colliding-entities]
-  (if (and (not-empty (filter #(get-in % [:components :collider :is-rigid-body?]) colliding-entities))
-           (get-in entity [:components :collider :is-rigid-body?]))
-    (stop-motion-on-entity entity)
+  [entity collisions]
+  (if (and (not-empty (->> collisions
+                           (map :entity)
+                           (filter #(get-in % [:components :collider :is-rigid-body?])))))
+    (update-motion entity collisions)
     entity))
 
 (defn update-entity-on-collision-enter
@@ -76,17 +150,31 @@
       entity)
     entity))
 
-(defn handle-physics
-  [entity entities]
-  (let [colliding-entities (get-colliding-entities entity entities)
-        updated-entity (update-entity-motion entity colliding-entities)]
-    (if (not-empty colliding-entities)
-      (-> updated-entity
+(defn update-collisions
+  [entity all-entities]
+  (let [collisions (get-collisions entity all-entities)]
+    (if (not-empty collisions)
+      (-> entity
+          (update-entity-motion collisions)
           (update-entity-on-collision-enter)
           (assoc-in [:components :collider :is-colliding?] true))
-      (-> updated-entity
+      (-> entity
           (update-entity-on-collision-exit)
           (assoc-in [:components :collider :is-colliding?] false)))))
+
+(defn update-gravity
+  [entity]
+  (if-not (get-in entity [:components :collider :is-kinematic?])
+    (if (get-in entity [:components :motion])
+      (assoc-in entity [:components :motion :dy] 1)
+      entity)
+    entity))
+
+(defn handle-physics
+  [entity all-entities]
+  (-> entity
+      (update-gravity)
+      (update-collisions all-entities)))
 
 (defn physics
   [entities]
