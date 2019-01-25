@@ -166,7 +166,7 @@
   [entity]
   (if-not (get-in entity [:components :collider :is-kinematic?])
     (if (get-in entity [:components :motion])
-      (assoc-in entity [:components :motion :dy] 1)
+      (update-in entity [:components :motion :dy] #(if (< % 10) (+ % 0.5) %))
       entity)
     entity))
 
