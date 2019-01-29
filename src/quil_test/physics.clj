@@ -29,51 +29,67 @@
       false
       true)))
 
+(defn- collision-dx-dy
+  [e1-transform e1-collider dx dy
+   e2-transform e2-collider]
+  (let [x-collision? (aabs-overlapping? (get-aab (+ (:x e1-transform) dx)
+                                                 (:y e1-transform)
+                                                 (:width e1-collider)
+                                                 (:height e1-collider))
+                                        (get-aab (:x e2-transform)
+                                                 (:y e2-transform)
+                                                 (:width e2-collider)
+                                                 (:height e2-collider)))
+        y-collision? (aabs-overlapping? (get-aab (:x e1-transform)
+                                                 (+ (:y e1-transform) dy)
+                                                 (:width e1-collider)
+                                                 (:height e1-collider))
+                                        (get-aab (:x e2-transform)
+                                                 (:y e2-transform)
+                                                 (:width e2-collider)
+                                                 (:height e2-collider)))]
+    {:collision? (or x-collision? y-collision?) :x-collision? x-collision? :y-collision? y-collision?}))
+
+(defn- collision-dx
+  [e1-transform e1-collider dx
+   e2-transform e2-collider]
+  (let [x-collision? (aabs-overlapping? (get-aab (+ (:x e1-transform) dx)
+                                                 (:y e1-transform)
+                                                 (:width e1-collider)
+                                                 (:height e1-collider))
+                                        (get-aab (:x e2-transform)
+                                                 (:y e2-transform)
+                                                 (:width e2-collider)
+                                                 (:height e2-collider)))]
+    {:collision? x-collision? :x-collision? x-collision? :y-collision? false}))
+
+(defn- collision-dy
+  [e1-transform e1-collider dy
+   e2-transform e2-collider]
+  (let [y-collision? (aabs-overlapping? (get-aab (:x e1-transform)
+                                                 (+ (:y e1-transform) dy)
+                                                 (:width e1-collider)
+                                                 (:height e1-collider))
+                                        (get-aab (:x e2-transform)
+                                                 (:y e2-transform)
+                                                 (:width e2-collider)
+                                                 (:height e2-collider)))]
+    {:collision? y-collision? :x-collision? false :y-collision? y-collision?}))
+
 (defn get-collision-with-motion
   [e1-transform e1-collider e1-motion
    e2-transform e2-collider]
   (let [dx (* (:dx e1-motion) (:velocity e1-motion))
         dy (* (:dy e1-motion) (:velocity e1-motion))]
     (if (and (not= dx 0) (not= dy 0))
-      (let [x-collision? (aabs-overlapping? (get-aab (+ (:x e1-transform) dx)
-                                                     (:y e1-transform)
-                                                     (:width e1-collider)
-                                                     (:height e1-collider))
-                                            (get-aab (:x e2-transform)
-                                                     (:y e2-transform)
-                                                     (:width e2-collider)
-                                                     (:height e2-collider)))
-            y-collision? (aabs-overlapping? (get-aab (:x e1-transform)
-                                                     (+ (:y e1-transform) dy)
-                                                     (:width e1-collider)
-                                                     (:height e1-collider))
-                                            (get-aab (:x e2-transform)
-                                                     (:y e2-transform)
-                                                     (:width e2-collider)
-                                                     (:height e2-collider)))]
-        {:collision? (or x-collision? y-collision?) :x-collision? x-collision? :y-collision? y-collision?})
+      (collision-dx-dy e1-transform e1-collider dx dy
+                       e2-transform e2-collider)
       (if (not= dx 0)
-        (if (aabs-overlapping? (get-aab (+ (:x e1-transform) dx)
-                                        (:y e1-transform)
-                                        (:width e1-collider)
-                                        (:height e1-collider))
-                               (get-aab (:x e2-transform)
-                                        (:y e2-transform)
-                                        (:width e2-collider)
-                                        (:height e2-collider)))
-          {:collision? true :x-collision? true :y-collision? false}
-          {:collision? false :x-collision? false :y-collision? false})
+        (collision-dx e1-transform e1-collider dx
+                      e2-transform e2-collider)
         (if (not= dy 0)
-          (if (aabs-overlapping? (get-aab (:x e1-transform)
-                                          (+ (:y e1-transform) dy)
-                                          (:width e1-collider)
-                                          (:height e1-collider))
-                                 (get-aab (:x e2-transform)
-                                          (:y e2-transform)
-                                          (:width e2-collider)
-                                          (:height e2-collider)))
-            {:collision? true :x-collision? false :y-collision? true}
-            {:collision? false :x-collision? false :y-collision? false})
+          (collision-dy e1-transform e1-collider dy
+                        e2-transform e2-collider)
           {:collision? false :x-collision? false :y-collision? false})))))
 
 (defn get-collision
