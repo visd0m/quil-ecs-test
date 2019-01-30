@@ -11,7 +11,6 @@
 
 (defn- is-valid-transition?
   [new-state-id current-state]
-  ;(println "new state" new-state-id " current state" current-state)
   (let [allowed-transitions (get current-state :transitions)]
     (some #(= new-state-id %) allowed-transitions)))
 
@@ -24,11 +23,9 @@
 
 (defn set-state
   [entity state]
-  ;(println "state" state)
   (if (get-in entity [:components :fsm])
     (let [components (get state :components [])
           updated-entity (assoc-in entity [:components :fsm :current-state] (:id state))]
-      ;(println "components" components)
       (reduce #(entity/attach-component-on-entity %1 %2) updated-entity components))
     entity))
 
@@ -48,7 +45,6 @@
   (for [entity entities]
     (if-let [fsm (get-in entity [:components :fsm])]
       (let [triggered-transitions (get fsm :triggered-transitions [])]
-        ;(println "FSM:" fsm)
         (if (seq triggered-transitions)
           (-> entity
               (handle-transitions triggered-transitions fsm)
