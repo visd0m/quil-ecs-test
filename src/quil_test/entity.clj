@@ -11,5 +11,6 @@
 
 (defn attach-component-on-entity
   [entity component]
+  ;(println "attaching component=" component " to entity=" entity)
   (let [component-with-id (merge (:component component) {:id (java.util.UUID/randomUUID)})]
     (assoc-in entity [:components (:type component)] component-with-id)))

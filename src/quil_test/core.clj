@@ -2,12 +2,13 @@
 
   (:require [quil.core :as q]
             [quil.middleware :as m]
-            [quil-test.entity :as entity]
             [quil-test.physics :as physics]
             [quil-test.graphics :as graphics]
             [quil-test.movement :as movement]
             [quil-test.camera :as camera]
-            [quil-test.input :as input]))
+            [quil-test.input :as input]
+            [quil-test.entity :as entity]
+            [quil-test.fsm :as fsm]))
 
 ; setting up
 
@@ -31,7 +32,29 @@
                                           :component {:width          30
                                                       :height         30
                                                       :is-rigid-body? true
-                                                      :is-kinematic?  false}})))
+                                                      :is-kinematic?  false}})
+      (entity/attach-component-on-entity {:type      :fsm
+                                          :component {:current-state         :idle
+                                                      :triggered-transitions []
+                                                      :states                [{:id          :idle
+                                                                               :components  [{:type      :drawable
+                                                                                              :component {:draw-fn (fn []
+                                                                                                                     (q/fill 255 0 255)
+                                                                                                                     (q/rect 0 0 30 30))}}]
+                                                                               :transitions [:moving :jumping]}
+                                                                              {:id          :moving
+                                                                               :components  [{:type      :drawable
+                                                                                              :component {:draw-fn (fn []
+                                                                                                                     (q/fill 0 0 255)
+                                                                                                                     (q/rect 0 0 30 30))}}]
+                                                                               :transitions [:idle :jumping]}
+                                                                              {:id          :jumping
+                                                                               :components  [{:type      :drawable
+                                                                                              :component {:draw-fn (fn []
+                                                                                                                     (q/fill 255 0 0)
+                                                                                                                     (q/rect 0 0 30 30))}}]
+                                                                               :transitions [:idle :moving]}]}})))
+
 
 (defn- create-camera
   [entity-to-follow]
@@ -93,7 +116,8 @@
   (assoc state :entities (-> (:entities state)
                              (physics/physics)
                              (movement/movement)
-                             (camera/camera))))
+                             (camera/camera)
+                             (fsm/fsm))))
 
 (defn key-down
   [state key-event]
@@ -116,7 +140,7 @@
 
 (q/defsketch quil-test
              :title "ecs test"
-             :size [400 400]
+             :size [200 200]
              :setup setup
              :key-pressed key-down
              :key-released key-released
