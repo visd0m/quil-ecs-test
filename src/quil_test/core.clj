@@ -8,7 +8,8 @@
             [quil-test.camera :as camera]
             [quil-test.input :as input]
             [quil-test.entity :as entity]
-            [quil-test.fsm :as fsm]))
+            [quil-test.fsm :as fsm]
+            [quil-test.script :as script]))
 
 ; setting up
 
@@ -33,6 +34,17 @@
                                                       :height         30
                                                       :is-rigid-body? true
                                                       :is-kinematic?  false}})
+      (entity/attach-component-on-entity {:type      :script
+                                          :component {:fn (fn [entity]
+                                                            (let [dx (get-in entity [:components :motion :dx])
+                                                                  dy (get-in entity [:components :motion :dy])]
+                                                              (if (and (not= dx 0) (not= dy 0))
+                                                                (fsm/trigger-transition entity [:jumping])
+                                                                (if (not= dx 0)
+                                                                  (fsm/trigger-transition entity [:moving])
+                                                                  (if (not= dy 0)
+                                                                    (fsm/trigger-transition entity [:jumping])
+                                                                    (fsm/trigger-transition entity [:idle]))))))}})
       (entity/attach-component-on-entity {:type      :fsm
                                           :component {:current-state         :idle
                                                       :triggered-transitions []
@@ -40,19 +52,25 @@
                                                                                :components  [{:type      :drawable
                                                                                               :component {:draw-fn (fn []
                                                                                                                      (q/fill 255 0 255)
-                                                                                                                     (q/rect 0 0 30 30))}}]
+                                                                                                                     (q/rect 0 0 30 30))}}
+                                                                                             {:type      :input
+                                                                                              :component {:input-handler-fn input/handle-movement-wasd-jump}}]
                                                                                :transitions [:moving :jumping]}
                                                                               {:id          :moving
                                                                                :components  [{:type      :drawable
                                                                                               :component {:draw-fn (fn []
                                                                                                                      (q/fill 0 0 255)
-                                                                                                                     (q/rect 0 0 30 30))}}]
+                                                                                                                     (q/rect 0 0 30 30))}}
+                                                                                             {:type      :input
+                                                                                              :component {:input-handler-fn input/handle-movement-wasd-jump}}]
                                                                                :transitions [:idle :jumping]}
                                                                               {:id          :jumping
                                                                                :components  [{:type      :drawable
                                                                                               :component {:draw-fn (fn []
                                                                                                                      (q/fill 255 0 0)
-                                                                                                                     (q/rect 0 0 30 30))}}]
+                                                                                                                     (q/rect 0 0 30 30))}}
+                                                                                             {:type      :input
+                                                                                              :component {:input-handler-fn input/handle-movement-wasd}}]
                                                                                :transitions [:idle :moving]}]}})))
 
 
@@ -117,7 +135,8 @@
                              (physics/physics)
                              (movement/movement)
                              (camera/camera)
-                             (fsm/fsm))))
+                             (fsm/fsm)
+                             (script/script))))
 
 (defn key-down
   [state key-event]
