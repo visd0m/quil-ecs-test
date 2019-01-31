@@ -54,7 +54,6 @@
 
 (defn trigger-transition
   [entity transition-ids]
-  (println "triggering transition" transition-ids)
   (if (get-in entity [:components :fsm])
     (-> entity
         (update-in [:components :fsm :triggered-transitions] #(distinct (concat % transition-ids))))

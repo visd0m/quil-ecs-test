@@ -173,10 +173,12 @@
       (-> entity
           (update-entity-motion collisions)
           (update-entity-on-collision-enter)
-          (assoc-in [:components :collider :is-colliding?] true))
+          (assoc-in [:components :collider :is-colliding?] true)
+          (assoc-in [:components :collider :collisions] collisions))
       (-> entity
           (update-entity-on-collision-exit)
-          (assoc-in [:components :collider :is-colliding?] false)))))
+          (assoc-in [:components :collider :is-colliding?] false)
+          (assoc-in [:components :collider :collisions] [])))))
 
 (defn update-gravity
   [entity]

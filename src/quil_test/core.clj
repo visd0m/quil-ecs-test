@@ -43,7 +43,12 @@
                                                                 (if (not= dx 0)
                                                                   (fsm/trigger-transition entity [:moving])
                                                                   (if (not= dy 0)
-                                                                    (fsm/trigger-transition entity [:jumping])
+                                                                    (if-let [collisions (get-in entity [:components :collider :collisions])]
+                                                                      (if (seq (filter #(and (= (:tag (:entity %)) "ground")
+                                                                                             (:y-collision? %)) collisions))
+                                                                        (fsm/trigger-transition entity [:idle])
+                                                                        (fsm/trigger-transition entity [:jumping]))
+                                                                      (fsm/trigger-transition entity [:jumping]))
                                                                     (fsm/trigger-transition entity [:idle]))))))}})
       (entity/attach-component-on-entity {:type      :fsm
                                           :component {:current-state         :idle
@@ -72,7 +77,6 @@
                                                                                              {:type      :input
                                                                                               :component {:input-handler-fn input/handle-movement-wasd}}]
                                                                                :transitions [:idle :moving]}]}})))
-
 
 (defn- create-camera
   [entity-to-follow]

@@ -13,7 +13,7 @@
 (defn graphics
   [entities]
   (q/background 0 200 0)
-  (if-let [camera (first (filter #(get-in % [:components :camera]) entities))]
+  (when-let [camera (first (filter #(get-in % [:components :camera]) entities))]
     (doseq [entity entities]
       (let [entity-drawable (get-in entity [:components :drawable])
             entity-transform (get-in entity [:components :transform])
