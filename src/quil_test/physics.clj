@@ -98,19 +98,19 @@
         e1-collider (get-in e1 [:components :collider])
         e2-transform (get-in e2 [:components :transform])
         e2-collider (get-in e2 [:components :collider])]
-    (merge {:entity e2} (if (aabs-overlapping? (get-aab (:x e1-transform)
-                                                        (:y e1-transform)
-                                                        (:width e1-collider)
-                                                        (:height e1-collider))
-                                               (get-aab (:x e2-transform)
-                                                        (:y e2-transform)
-                                                        (:width e2-collider)
-                                                        (:height e2-collider)))
-                          {:collision? true :x-collision? true :y-collision? true}
-                          (if-let [e1-motion (get-in e1 [:components :motion])]
-                            (get-collision-with-motion e1-transform e1-collider e1-motion
-                                                       e2-transform e2-collider)
-                            {:collision? false :x-collision? false :y-collision? false})))))
+    (merge {:entity (update-in e2 [:components :collider] dissoc :collisions)} (if (aabs-overlapping? (get-aab (:x e1-transform)
+                                                                                                               (:y e1-transform)
+                                                                                                               (:width e1-collider)
+                                                                                                               (:height e1-collider))
+                                                                                                      (get-aab (:x e2-transform)
+                                                                                                               (:y e2-transform)
+                                                                                                               (:width e2-collider)
+                                                                                                               (:height e2-collider)))
+                                                                                 {:collision? true :x-collision? true :y-collision? true}
+                                                                                 (if-let [e1-motion (get-in e1 [:components :motion])]
+                                                                                   (get-collision-with-motion e1-transform e1-collider e1-motion
+                                                                                                              e2-transform e2-collider)
+                                                                                   {:collision? false :x-collision? false :y-collision? false})))))
 
 (defn get-collisions
   [entity all-entities]

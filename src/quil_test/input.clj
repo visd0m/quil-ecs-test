@@ -13,7 +13,7 @@
   [motion key-event]
   (case (:type key-event)
     :down (case (:key key-event)
-            :w (assoc motion :dy (* -1 10))
+            :w (assoc motion :dy (* -1 15))
             :a (assoc motion :dx (* -1 (:velocity motion)))
             :d (assoc motion :dx (* 1 (:velocity motion)))
             motion)

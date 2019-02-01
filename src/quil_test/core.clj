@@ -1,5 +1,4 @@
 (ns quil-test.core
-
   (:require [quil.core :as q]
             [quil.middleware :as m]
             [quil-test.physics :as physics]
@@ -35,21 +34,7 @@
                                                       :is-rigid-body? true
                                                       :is-kinematic?  false}})
       (entity/attach-component-on-entity {:type      :script
-                                          :component {:fn (fn [entity]
-                                                            (let [dx (get-in entity [:components :motion :dx])
-                                                                  dy (get-in entity [:components :motion :dy])]
-                                                              (if (and (not= dx 0) (not= dy 0))
-                                                                (fsm/trigger-transition entity [:jumping])
-                                                                (if (not= dx 0)
-                                                                  (fsm/trigger-transition entity [:moving])
-                                                                  (if (not= dy 0)
-                                                                    (if-let [collisions (get-in entity [:components :collider :collisions])]
-                                                                      (if (seq (filter #(and (= (:tag (:entity %)) "ground")
-                                                                                             (:y-collision? %)) collisions))
-                                                                        (fsm/trigger-transition entity [:idle])
-                                                                        (fsm/trigger-transition entity [:jumping]))
-                                                                      (fsm/trigger-transition entity [:jumping]))
-                                                                    (fsm/trigger-transition entity [:idle]))))))}})
+                                          :component {:fn script/player-script}})
       (entity/attach-component-on-entity {:type      :fsm
                                           :component {:current-state         :idle
                                                       :triggered-transitions []
@@ -64,7 +49,7 @@
                                                                               {:id          :moving
                                                                                :components  [{:type      :drawable
                                                                                               :component {:draw-fn (fn []
-                                                                                                                     (q/fill 0 0 255)
+                                                                                                                     (q/fill 255 255 255)
                                                                                                                      (q/rect 0 0 30 30))}}
                                                                                              {:type      :input
                                                                                               :component {:input-handler-fn input/handle-movement-wasd-jump}}]
@@ -72,7 +57,7 @@
                                                                               {:id          :jumping
                                                                                :components  [{:type      :drawable
                                                                                               :component {:draw-fn (fn []
-                                                                                                                     (q/fill 255 0 0)
+                                                                                                                     (q/fill 0 0 0)
                                                                                                                      (q/rect 0 0 30 30))}}
                                                                                              {:type      :input
                                                                                               :component {:input-handler-fn input/handle-movement-wasd}}]
@@ -88,13 +73,14 @@
                                           :component {:behavior {:type             :follow
                                                                  :entity-to-follow (:id entity-to-follow)}}})))
 
-(defn- create-wall
+(defn- create-block
   [{x              :x
     y              :y
+    tag            :tag
     width          :width
     height         :height
     is-rigid-body? :is-rigid-body?, :or {is-rigid-body? true}}]
-  (-> (entity/create-entity "wall")
+  (-> (entity/create-entity tag)
       (entity/attach-component-on-entity {:type      :transform
                                           :component {:x x
                                                       :y y}})
@@ -113,11 +99,11 @@
   (let [state {:entities []}
         player (create-player 0 0)
         camera (create-camera player)
-        wall1 (create-wall {:x -30 :y -380 :width 20 :height 500})
-        ground1 (create-wall {:x -10 :y 100 :width 500 :height 20})
-        ground2 (create-wall {:x 300 :y 300 :width 500 :height 20})
-        wall2 (create-wall {:x -110 :y -100 :width 20 :height 450})
-        wall3 (create-wall {:x 20 :y 20 :width 20 :height 20 :is-rigid-body? false})]
+        wall1 (create-block {:x -30 :y -380 :tag "wall" :width 20 :height 500})
+        ground1 (create-block {:x -10 :y 100 :tag "ground" :width 500 :height 20})
+        ground2 (create-block {:x 300 :y 300 :tag "ground" :width 500 :height 20})
+        wall2 (create-block {:x -110 :y -100 :tag "wall" :width 20 :height 450})
+        wall3 (create-block {:x 20 :y 20 :tag "wall" :width 20 :height 20 :is-rigid-body? false})]
     (-> state
         (entity/register-entity player)
         (entity/register-entity camera)
