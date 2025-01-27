@@ -182,7 +182,6 @@
                                    (assoc-in [:components :transform :y] (+ (get-in entity [:components :transform :y]) (- mouse-y (get-in entity [:components :transform :y])))))
                                entity)))))
 
-
 ; draw
 
 (defn draw
@@ -193,13 +192,13 @@
 ; sketch
 
 (q/defsketch quil-test
-             :title "ecs test"
-             :size [400 400]
-             :setup setup
-             :mouse-dragged mouse-dragged
-             :key-pressed key-down
-             :key-released key-released
-             :update update-state
-             :draw draw
-             :features [:keep-on-top]
-             :middleware [m/fun-mode])
+  :title "ecs test"
+  :size [400 400]
+  :setup setup
+  :mouse-dragged mouse-dragged
+  :key-pressed key-down
+  :key-released key-released
+  :update update-state
+  :draw draw
+  :features [:keep-on-top]
+  :middleware [m/fun-mode])
